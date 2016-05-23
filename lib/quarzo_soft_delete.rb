@@ -4,7 +4,8 @@ module QuarzoSoftDelete
     def act_as_quarzo_soft_delete
       send :include, InstanceMethods
 
-      default_scope { where("(#{self.table_name}.deleted <> :deleted or #{self.table_name}.deleted is :null)", deleted: true, null: nil) }
+      default_scope :conditions => ["(#{self.table_name}.deleted <> :deleted or #{self.table_name}.deleted is :null)",
+                                { :deleted => true, :null => nil}]
     end
                         
     def all_active
@@ -90,12 +91,14 @@ module QuarzoSoftDelete
         columns = related_class.columns_hash
 
         if columns.has_key?('deleted')
-          condition = foreign_key + " = :object_id AND (deleted <> :deleted or deleted is :null)"
+          condition = [foreign_key +" = :object_id AND (deleted <> :deleted or deleted is :null)", {
+              :deleted => true, :null => nil, :object_id => self.id} ]
         else
-          condition = foreign_key + " = :object_id"
+          condition = [foreign_key +" = :object_id", {
+              :object_id => self.id} ]
         end
 
-        count = related_class.where(condition, deleted: true, null: nil, object_id: self.id).count
+        count = related_class.count(:conditions => condition)
 
         if count > 0
           removable = false

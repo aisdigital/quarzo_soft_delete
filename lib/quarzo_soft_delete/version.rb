@@ -1,3 +1,3 @@
 module QuarzoSoftDelete
-  VERSION = "0.1.2"
+  VERSION = "0.0.5"
 end
