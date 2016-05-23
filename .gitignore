@@ -1,0 +1,11 @@
+/doc/
+/pkg/
+/tmp/
+/future/
+.rbx/
+.#*
+.DS_Store
+*.bundle
+*.rbc
+/Gemfile.lock
+/test/*
